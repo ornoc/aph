@@ -3,26 +3,26 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
-// Função para registro de um novo usuário
+// registrar usuario
 exports.register = async (req, res) => {
     const { nome, sobrenome, email, senha } = req.body;
 
-    // Validação da senha
+    // valida a senha
     if (senha.length < 8) {
         return res.status(400).json({ message: 'A senha deve ter pelo menos 8 caracteres.' });
     }
 
     try {
-        // Verificar se o usuário já existe
+        // verifica se usuario ja existe
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ message: 'Usuário já registrado' });
         }
 
-        // Criptografar a senha
+        //criptografa a senha
         const hashedPassword = await bcrypt.hash(senha, 10);
 
-        // Criar novo usuário
+        // cria novo usuario
         const newUser = new User({ nome, sobrenome, email, senha: hashedPassword });
         await newUser.save();
 
@@ -33,31 +33,30 @@ exports.register = async (req, res) => {
     }
 };
 
-// Função para login de usuário
+// login do usuario
 exports.login = async (req, res) => {
     const { email, senha } = req.body;
-    console.log("Iniciando login para:", email);  // Log para iniciar o processo de login
+    console.log("Iniciando login para:", email);  // log para iniciar o processo de login
 
     try {
-        // Verificar se o usuário existe
+        //verifica se usuario existe
         const user = await User.findOne({ email });
         if (!user) {
             console.log("Usuário não encontrado:", email);
             return res.status(400).json({ message: 'Usuário não encontrado.' });
         }
 
-        // Verificar se a senha está correta
+        // ve se a senha ta errada
         const isPasswordValid = await bcrypt.compare(senha, user.senha);
         if (!isPasswordValid) {
             console.log("Senha incorreta para usuário:", email);
             return res.status(400).json({ message: 'Senha incorreta.' });
         }
 
-        // Gerar o token JWT
-       // Correção na linha onde o token é gerado
+        // gera o token JWT
 const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        console.log("Token gerado com sucesso:", token);  // Log do token gerado
+        console.log("Token gerado com sucesso:", token);  // log do token gerado
 
         res.status(200).json({ token });
     } catch (error) {
@@ -66,7 +65,7 @@ const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1
     }
 };
 
-// Função para obter todos os usuários
+// obter todos os usuarios
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
@@ -77,11 +76,11 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// Função para obter um usuário específico por ID
+// obter usuario especifico por id
 exports.getUserById = async (req, res) => {
     const { id } = req.params;
 
-    // Verificar se o ID é válido
+    // ve se o id é valido
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'ID inválido.' });
     }
