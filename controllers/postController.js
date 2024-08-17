@@ -5,7 +5,7 @@ exports.createPost = async (req, res) => {
     try {
         const { titulo, conteudo } = req.body;
         
-        // Adicione logs para depuração
+        // adicione logs para depuração
         console.log('Título recebido:', titulo);
         console.log('Conteúdo recebido:', conteudo);
         
@@ -17,17 +17,17 @@ exports.createPost = async (req, res) => {
         await newPost.save();
         res.status(201).json(newPost);
     } catch (error) {
-        console.error('Erro ao criar postagem:', error); // Log detalhado do erro
+        console.error('Erro ao criar postagem:', error); // log detalhado do erro
         res.status(500).json({ message: 'Erro ao criar postagem', error });
     }
 };
 
-// Função para atualizar uma postagem
+// função para atualizar uma postagem
 exports.updatePost = async (req, res) => {
     const { id } = req.params;
     const { titulo, conteudo } = req.body;
 
-    // Verificar se o ID é válido
+    // verifica se o ID é válido
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({ message: 'ID inválido.' });
     }
@@ -42,7 +42,7 @@ exports.updatePost = async (req, res) => {
     }
 };
   
-// Função para obter todas as postagens
+// obter todas as postagens
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
@@ -52,11 +52,11 @@ exports.getPosts = async (req, res) => {
   }
 };
 
-// Função para obter uma postagem específica
+// obter uma postagem específica
 exports.getPost = async (req, res) => {
   const { id } = req.params;
 
-  // Verificar se o ID é válido
+  // Verifica se o ID é válido
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: 'ID inválido.' });
   }
@@ -72,7 +72,7 @@ exports.getPost = async (req, res) => {
 };
 
 
-// Função para excluir uma postagem
+// excluir uma postagem
 exports.deletePost = async (req, res) => {
   const { id } = req.params;
 
